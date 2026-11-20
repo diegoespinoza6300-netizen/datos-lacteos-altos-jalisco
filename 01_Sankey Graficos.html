@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Diagramas Sankey — Tesis Altos de Jalisco</title>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Times New Roman',Times,serif; background:#ffffff; padding:16px; color:#111; }
+  h1   { text-align:center; font-size:16px; margin-bottom:4px; color:#111; }
+  .sub { text-align:center; font-size:12px; color:#555; margin-bottom:20px; font-style:italic; }
+  .btn { display:block; margin:0 auto 22px; padding:8px 24px; background:#333;
+         color:#fff; border:none; font-family:'Times New Roman',serif;
+         font-size:13px; cursor:pointer; }
+         
+  /* Secciones sin marcos grises */
+  .seccion {
+    background: #fff; 
+    border: none;
+    padding: 10px 0; 
+    margin: 0 auto 35px;
+    width: 460px;
+  }
+  .seccion h2 { 
+    font-size: 12px; 
+    font-weight: bold; 
+    text-align: center;
+    margin-bottom: 8px; 
+    color: #111; 
+  }
+
+  /* Contenedor del gráfico sin bordes */
+  .chart-box {
+    position: relative;
+    width: 440px; 
+    height: 380px;
+    margin: 0 auto;
+    background: #fff;
+    border: none;
+  }
+  .chart-box > div { width: 100%; height: 100%; }
+  /* Etiqueta vertical ajustada correctamente al borde de la barra */
+  .vertical-label {
+    position: absolute;
+    right: 222.5px;
+    top: 50%;
+    transform: translateY(40%) rotate(90deg);
+    transform-origin: right center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11px;
+    font-weight: bold;
+    color: #222222;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* Descripción movida hacia la parte inferior */
+  .desc-bottom {
+    font-size: 11px;
+    text-align: center;
+    color: #333;
+    margin-top: 0px;
+    font-style: normal;
+  } 
+
+  /* Descripción movida hacia la parte inferior */
+  .desc-bottom { 
+    font-size: 11px; 
+    text-align: center; 
+    color: #333;
+    margin-top: 0px; 
+    font-style: normal; 
+  }
+          
+  @media print {
+    .btn { display:none; }
+    body { background:white; padding:0; }
+    .seccion { margin-bottom:0; page-break-after:always; width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Diagramas Sankey — Sistema de relaciones entre actores lácteos</h1>
+<p class="sub">Los Altos de Jalisco · Atlas.ti 2025 · Trayectoria · Interacción · Contingencia</p>
+<button class="btn" onclick="window.print()">🖨 Imprimir / Guardar como PDF</button>
+
+<!-- Figura 1 -->
+<div class="seccion">
+  <h2>Figura 1. Distribución código-documento: dimensión Contingencia (CPE)</h2>
+  <div class="chart-box">
+    <div id="s1"></div>
+    <div class="vertical-label">Contingencia (Gr = 197)</div>
+  </div>
+  <div class="desc-bottom">Gr total = 197 · Referencias analizadas = 120 · 9 actores clave</div>
+</div>
+
+<!-- Figura 2 -->
+<div class="seccion">
+  <h2>Figura 2. Distribución código-documento: dimensión Trayectoria (TPE)</h2>
+  <div class="chart-box">
+    <div id="s2"></div>
+    <div class="vertical-label">Trayectoria (Gr = 238)</div>
+  </div>
+  <div class="desc-bottom">Gr total = 238 · Referencias analizadas = 224 · 15 actores</div>
+</div>
+
+<!-- Figura 3 -->
+<div class="seccion">
+  <h2>Figura 3. Distribución código-documento: dimensión Interacción (IPE)</h2>
+  <div class="chart-box">
+    <div id="s3"></div>
+    <div class="vertical-label">Interacción (Gr = 253)</div>
+  </div>
+  <div class="desc-bottom">Gr total = 253 · Referencias analizadas = 238 · 15 actores</div>
+</div>
+
+<!-- Figura 4 -->
+<div class="seccion">
+  <h2>Figura 4. Distribución código-documento: Interacción, Trayectoria y Contingencia</h2>
+  <div class="chart-box"><div id="s4"></div></div>
+  <div class="desc-bottom">Tres dimensiones analíticas · 9 actores clave</div>
+</div>
+
+<!-- Figura 5 -->
+<div class="seccion">
+  <h2>Figura 5. Co-ocurrencias: Trayectoria (TPE) — Contingencia (CPE)</h2>
+  <div class="chart-box"><div id="s5"></div></div>
+  <div class="desc-bottom">Frecuencia de aparición simultánea entre códigos de ambas dimensiones</div>
+</div>
+
+<!-- Figura 6 -->
+<div class="seccion">
+  <h2>Figura 6. Co-ocurrencias: Interacción (IPE) — Contingencia (CPE)</h2>
+  <div class="chart-box"><div id="s6"></div></div>
+  <div class="desc-bottom">Frecuencia de aparición simultánea entre códigos de ambas dimensiones</div>
+</div>
+
+<!-- Figura 7 -->
+<div class="seccion">
+  <h2>Figura 7. Co-ocurrencias: Interacción (IPE) — Trayectoria (TPE)</h2>
+  <div class="chart-box"><div id="s7"></div></div>
+  <div class="desc-bottom">Frecuencia de aparición simultánea entre códigos de ambas dimensiones</div>
+</div>
+
+<script type="text/javascript">
+google.charts.load('current', {'packages':['sankey']});
+google.charts.setOnLoadCallback(dibujarTodo);
+
+function grises(n) {
+  var out = [];
+  for (var i = 0; i < n; i++) {
+    var v = Math.round(40 + (170 * i / Math.max(n - 1, 1)));
+    var h = v.toString(16).padStart(2, '0');
+    out.push('#' + h + h + h);
+  }
+  return out;
+}
+
+function nodosUnicos(filas) {
+  var set = {};
+  filas.forEach(function(f){ set[f[0]] = 1; set[f[1]] = 1; });
+  return Object.keys(set).length;
+}
+
+function makeSankey(divId, filas, w, h, coloresNodos) {
+  var data = new google.visualization.DataTable();
+  data.addColumn('string', 'Origen');
+  data.addColumn('string', 'Destino');
+  data.addColumn('number', 'Valor');
+  data.addRows(filas);
+
+  var colors = coloresNodos && coloresNodos.length > 0
+    ? coloresNodos
+    : grises(nodosUnicos(filas));
+
+  var opts = {
+    width:  w || 410,
+    height: h || 360,
+    tooltip: { trigger: 'none' },
+    sankey: {
+      iterations: 32,
+      node: {
+        colors: colors,
+        label: { fontName: 'Times New Roman', fontSize: 10, color: '#111' },
+        nodePadding: 8,
+        width: 15
+      },
+      link: { colorMode: 'source' }
+    }
+  };
+
+  var chart = new google.visualization.Sankey(document.getElementById(divId));
+  chart.draw(data, opts);
+}
+
+function dibujarTodo() {
+  var D = '\u00A0';
+
+  // 1. CONTINGENCIA
+  makeSankey('s1', [
+    ['Actor 03 (Gr=31, 25.8%)', D, 31],
+    ['Actor 05 (Gr=18, 15.0%)', D, 18],
+    ['Actor 08 (Gr=14, 11.7%)', D, 14],
+    ['Actor 09 (Gr=14, 11.7%)', D, 14],
+    ['Actor 06 (Gr=11,  9.2%)', D, 11],
+    ['Actor 14 (Gr=9,   7.5%)', D,  9],
+    ['Actor 12 (Gr=8,   6.7%)', D,  8],
+    ['Actor 15 (Gr=8,   6.7%)', D,  8],
+    ['Actor 01 (Gr=7,   5.8%)', D,  7],
+  ], 410, 360, ['#1a1a1a','#303030','#484848','#555555','#686868','#898989','#a0a0a0','#b5b5b5','#cccccc']);
+
+  // 2. TRAYECTORIA
+  makeSankey('s2', [
+    ['Actor 03 (Gr=41, 18.3%)', D, 41],
+    ['Actor 04 (Gr=24, 10.7%)', D, 24],
+    ['Actor 05 (Gr=21,  9.4%)', D, 21],
+    ['Actor 08 (Gr=17,  7.6%)', D, 17],
+    ['Actor 02 (Gr=17,  7.6%)', D, 17],
+    ['Actor 09 (Gr=14,  6.3%)', D, 14],
+    ['Actor 01 (Gr=13,  5.8%)', D, 13],
+    ['Actor 06 (Gr=13,  5.8%)', D, 13],
+    ['Actor 15 (Gr=11,  4.9%)', D, 11],
+    ['Actor 13 (Gr=11,  4.9%)', D, 11],
+    ['Actor 07 (Gr=10,  4.5%)', D, 10],
+    ['Actor 14 (Gr=9,   4.0%)', D,  9],
+    ['Actor 10 (Gr=8,   3.6%)', D,  8],
+    ['Actor 12 (Gr=8,   3.6%)', D,  8],
+    ['Actor 11 (Gr=7,   3.1%)', D,  7],
+  ], 410, 360);
+
+  // 3. INTERACCIÓN
+  makeSankey('s3', [
+    ['Actor 03 (Gr=37, 15.5%)', D, 37],
+    ['Actor 02 (Gr=27, 11.3%)', D, 27],
+    ['Actor 04 (Gr=19,  8.0%)', D, 19],
+    ['Actor 05 (Gr=19,  8.0%)', D, 19],
+    ['Actor 08 (Gr=16,  6.7%)', D, 16],
+    ['Actor 06 (Gr=15,  6.3%)', D, 15],
+    ['Actor 09 (Gr=14,  5.9%)', D, 14],
+    ['Actor 13 (Gr=14,  5.9%)', D, 14],
+    ['Actor 01 (Gr=13,  5.5%)', D, 13],
+    ['Actor 14 (Gr=13,  5.5%)', D, 13],
+    ['Actor 10 (Gr=12,  5.0%)', D, 12],
+    ['Actor 07 (Gr=11,  4.6%)', D, 11],
+    ['Actor 12 (Gr=10,  4.2%)', D, 10],
+    ['Actor 15 (Gr=10,  4.2%)', D, 10],
+    ['Actor 11 (Gr=8,   3.4%)', D,  8],
+  ], 410, 360);
+
+  // 4. COMBINADO ITC
+  makeSankey('s4', [
+    ['Contingencia','Actor 03',31],['Contingencia','Actor 05',18],
+    ['Contingencia','Actor 08',14],['Contingencia','Actor 09',14],
+    ['Contingencia','Actor 06',11],['Contingencia','Actor 14', 9],
+    ['Contingencia','Actor 12', 8],['Contingencia','Actor 15', 8],
+    ['Contingencia','Actor 01', 7],
+    ['Interacción', 'Actor 03',37],['Interacción', 'Actor 05',19],
+    ['Interacción', 'Actor 06',15],['Interacción', 'Actor 08',16],
+    ['Interacción', 'Actor 09',14],['Interacción', 'Actor 12',10],
+    ['Interacción', 'Actor 14',13],['Interacción', 'Actor 15',10],
+    ['Interacción', 'Actor 01',13],
+    ['Trayectoria', 'Actor 03',41],['Trayectoria', 'Actor 05',21],
+    ['Trayectoria', 'Actor 06',13],['Trayectoria', 'Actor 08',17],
+    ['Trayectoria', 'Actor 09',14],['Trayectoria', 'Actor 12', 8],
+    ['Trayectoria', 'Actor 14', 9],['Trayectoria', 'Actor 15',11],
+    ['Trayectoria', 'Actor 01',13],
+  ], 410, 380);
+
+  // 5. COOC TRAYECTORIA–CONTINGENCIA
+  makeSankey('s5', [
+    ['TPE06','CPE06',121],['TPE06','CPE09',16],['TPE06','CPE10',15],['TPE06','CPE11', 3],
+    ['TPE07','CPE06', 33],['TPE07','CPE09',15],['TPE07','CPE10',14],['TPE07','CPE11', 8],
+    ['TPE08','CPE06', 12],['TPE08','CPE09',17],['TPE08','CPE10',13],['TPE08','CPE11', 9],
+    ['TPE19','CPE06', 10],['TPE19','CPE09', 2],['TPE19','CPE11', 1],
+    ['TPE04','CPE06',  3],['TPE05','CPE06',  5],
+    ['TPE16','CPE06',  2],['TPE16','CPE09', 3],['TPE16','CPE10',16],['TPE16','CPE11', 4],
+  ], 410, 380);
+
+  // 6. COOC INTERACCIÓN–CONTINGENCIA
+  makeSankey('s6', [
+    ['IPE14','CPE06',28],['IPE14','CPE09',18],['IPE14','CPE10',11],['IPE14','CPE11',16],
+    ['IPE03','CPE06', 8],['IPE03','CPE09', 4],['IPE03','CPE10', 9],['IPE03','CPE11', 2],
+    ['IPE15','CPE06', 3],['IPE15','CPE09', 5],['IPE15','CPE10', 3],['IPE15','CPE11', 1],
+    ['IPE13','CPE06',11],['IPE13','CPE09', 4],['IPE13','CPE10', 5],['IPE13','CPE11', 4],
+    ['IPE12','CPE06', 5],['IPE12','CPE09', 1],['IPE12','CPE10', 5],['IPE12','CPE11', 1],
+    ['IPE02','CPE06', 4],['IPE02','CPE09', 2],['IPE02','CPE10', 3],
+    ['IPE01','CPE06', 3],['IPE01','CPE09', 1],
+  ], 410, 380);
+
+  // 7. COOC INTERACCIÓN–TRAYECTORIA
+  makeSankey('s7', [
+    ['IPE14','TPE06',27],['IPE14','TPE07',13],['IPE14','TPE19',10],
+    ['IPE14','TPE08', 5],['IPE14','TPE04', 9],['IPE14','TPE05', 8],['IPE14','TPE16', 2],
+    ['IPE03','TPE06', 8],['IPE03','TPE07', 4],['IPE03','TPE19', 9],['IPE03','TPE08', 3],
+    ['IPE15','TPE06', 5],['IPE15','TPE07', 3],['IPE15','TPE04', 4],['IPE15','TPE05',10],
+    ['IPE13','TPE06',12],['IPE13','TPE07', 2],['IPE13','TPE08', 2],
+    ['IPE12','TPE06',28],['IPE12','TPE07',11],['IPE12','TPE19', 1],['IPE12','TPE16', 1],
+    ['IPE02','TPE06', 4],['IPE02','TPE07', 9],['IPE02','TPE19', 2],['IPE02','TPE04', 3],
+    ['IPE01','TPE06', 3],['IPE01','TPE07', 5],['IPE01','TPE19', 5],['IPE01','TPE08', 4],
+  ], 410, 380);
+}
+</script>
+</body>
+</html>
