@@ -40,3 +40,7 @@ En cumplimiento con los protocolos de ética de la investigación y protección 
 * `02 Mapeo de actores Cambiodinamico 2010-2025 y poromedio de producción.png`: Distribución espacial del cambio dinámico de actores (2010-2025) y promedios de producción lechera.
 * `CL 31151 03-23.png`, `CL 31152 03-23.png`, `CL 43116 03-23.png` y `CL 46115 03-23.png`: Mapas de evolución del Coeficiente de Localización (2003-2023) por subrama económica.
 * `Unidades economicas 31151 2010 y 2025.png`, `Unidades economicas 31152 2010 y 2025.png`, `Unidades economicas 43116 2010 y 2025.png` y `Unidades economicas 46115 2010 y 2025.png`: Cartografía comparativa de densidad y crecimiento de unidades económicas (2010-2025).
+### 4. Sistematización cualitativa, matrices de coocurrencias y diagramas de Sankey (Cap. 5) 
+* `01_Sankey Graficos.html` y `01_Sankey Graficos.pdf`: Visualizaciones interactivas y versión exportada en documento de los diagramas de Sankey generales de categorías analíticas.
+* `Altos lacteos_CD Contingencia-Actores clave.xlsx`, `Altos lacteos_CD Interaccion-Actores clave.xlsx` y `Altos lacteos_CD Trayectoria-Actores clave.xlsx`: Matrices de cruce documento-código (CD) entre actores clave y las dimensiones de Contingencia, Interacción y Trayectoria.
+* `Altos lacteos_COOC Interacciones-Contingencias.xlsx`, `Altos lacteos_COOC Interacciones-Trayectorias.xlsx` y `Altos lacteos_COOC Trayectorias-Contingencias.xlsx`: Matrices de coocurrencias (COOC) entre las dimensiones analíticas del Ensamble de Dinámicas Territoriales (EDT). 
